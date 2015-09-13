@@ -1,0 +1,20 @@
+apply plugin: 'scala'
+apply plugin: 'idea'
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies {
+
+  // the new version of parboiled
+  compile 'org.parboiled:parboiled_2.11:2.1.0'
+
+  // scala library
+  compile 'org.scala-lang:scala-library:2.11.7'
+
+  // test dependencies
+  testCompile 'org.scalatest:scalatest_2.11:2.2.4'
+  testCompile 'junit:junit:4.12'
+}

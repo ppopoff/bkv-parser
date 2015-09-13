@@ -1,0 +1,33 @@
+.classpath
+.worksheet
+.scala_dependencies
+.project
+.settings
+.cache
+.history
+./lib
+dist/*
+lib_managed/
+src_managed/
+project/boot
+project/plugins/project
+
+# gradle
+.gradle
+build/
+
+*~
+*.class
+*.jar
+
+# vim swap files
+*.swp
+
+# idea related
+*.log
+*.iml
+*.ipr
+*.iws
+out/
+.idea/
+target/
