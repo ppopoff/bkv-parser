@@ -26,12 +26,8 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
     '\r'.? ~ '\n'
   }
 
-  def Identifier = rule {
-    oneOrMore(AlphaNum ++ "_")
-  }
-
   def Key = rule {
-    Identifier
+    oneOrMore(AlphaNum ++ "_")
   }
 
   /**
