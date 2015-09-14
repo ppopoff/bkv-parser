@@ -44,7 +44,7 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
    *  - Множетсво пробелов может предшествовать Значению (Value)
    */
   def Value = rule {
-    noneOf(" \n").+
+    CharPredicate.Visible.+
   }
 
   def KeyValuePair = rule {
@@ -64,4 +64,12 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
     Identifier ~ OptionalWhiteSpaces ~ "{" ~ oneOrMore(OptionalWhiteSpaces ~ Node).separatedBy(NewLine) ~ "}"
   }
 
+
+  /**
+   * Entry point
+   * Точка входа
+   */
+  def Root = rule {
+    oneOrMore(Node).separatedBy(NewLine)
+  }
 }
