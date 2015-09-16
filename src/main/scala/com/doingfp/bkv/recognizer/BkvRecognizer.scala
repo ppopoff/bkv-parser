@@ -57,7 +57,7 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
   }
 
   def Block = rule {
-    Identifier ~ OptionalWhiteSpaces ~ "{" ~ oneOrMore(OptionalWhiteSpaces ~ Node).separatedBy(NewLine) ~ "}"
+    Key ~ OptionalWhiteSpaces ~ "{" ~ oneOrMore(OptionalWhiteSpaces ~ Node).separatedBy(NewLine) ~ "}"
   }
 
 

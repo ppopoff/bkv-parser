@@ -73,12 +73,6 @@ class BkvRecognizerSpec extends FunSpec with Matchers {
       }
     }
 
-    describe("Identifier") {
-      it ("contains one or more alphanumeric character or underscore") {
-        Recognizer("valid_Identifier0123").Identifier.run().isSuccess shouldBe true
-      }
-    }
-
     describe("Key") {
       it ("should follow the same rules as identifier") {
         Recognizer("valid_Key0123").Key.run().isSuccess shouldBe true
