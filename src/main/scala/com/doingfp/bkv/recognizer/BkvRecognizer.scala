@@ -8,6 +8,8 @@ object BkvRecognizer {
   val ValueSymbol     = CharPredicate.Visible
   val KeySymbol       = Identifier
   val BlockNameSymbol = Identifier
+  val BlockBeginning  = '{'
+  val BlockEnding     = '}'
 }
 
 class BkvRecognizer(val input: ParserInput) extends Parser {
@@ -37,6 +39,15 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
     Key ~ MayBeWS ~ "=" ~ MayBeWS ~ Value
   }
 
+  def Block = rule {
+    BlockName ~ MayBeWS ~ BlockBeginning ~ Nodes ~ BlockEnding
+  }
+
+  def BlockName = rule {
+    oneOrMore(BlockNameSymbol)
+  }
+
+  // Recursive call. Type MUST be specified
   def Node: Rule0 = rule {
     KeyValuePair | Block
   }
@@ -45,15 +56,6 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
     MayBeWS ~
       zeroOrMore(Node).separatedBy(NewLine ~ MayBeWS) ~
     MayBeWS
-  }
-
-  def BlockName = rule {
-    oneOrMore(BlockNameSymbol)
-  }
-
-  def Block = rule {
-    BlockName ~ MayBeWS ~ "{" ~ "xxx" ~"}"
-//    BlockName ~ MayBeWS ~ "{" ~ Nodes ~"}" ~ MayBeWS
   }
 
   def Root = rule {
