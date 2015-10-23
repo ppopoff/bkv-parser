@@ -2,10 +2,16 @@ package com.doingfp.bkv.recognizer
 
 import org.parboiled2._
 
-class BkvRecognizer(val input: ParserInput) extends Parser {
-
+object BkvRecognizer {
   val WhitespaceChars = "\n\t "
-  val KeySymbol = CharPredicate.AlphaNum ++ '_'
+  val Identifier      = CharPredicate.AlphaNum ++ '.' ++ '_'
+  val ValueSymbol     = CharPredicate.Visible
+  val KeySymbol       = Identifier
+  val BlockNameSymbol = Identifier
+}
+
+class BkvRecognizer(val input: ParserInput) extends Parser {
+  import BkvRecognizer._
 
   def WhiteSpace = rule {
     anyOf(WhitespaceChars)
@@ -23,39 +29,34 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
     oneOrMore(KeySymbol)
   }
 
-  def ValueChar = rule {
-    noneOf(WhitespaceChars)
-  }
-
   def Value = rule {
-    oneOrMore(ValueChar)
+    oneOrMore(ValueSymbol)
   }
 
   def KeyValuePair = rule {
     Key ~ MayBeWS ~ "=" ~ MayBeWS ~ Value
   }
 
-  def KeyValueLine = rule {
-    MayBeWS ~ KeyValuePair ~ MayBeWS
-  }
-
   def Node: Rule0 = rule {
-    KeyValueLine | Block
+    KeyValuePair | Block
   }
 
   def Nodes = rule {
-    oneOrMore(Node).separatedBy(NewLine)
+    MayBeWS ~
+      zeroOrMore(Node).separatedBy(NewLine ~ MayBeWS) ~
+    MayBeWS
   }
 
   def BlockName = rule {
-    MayBeWS ~ Key ~ MayBeWS
+    oneOrMore(BlockNameSymbol)
   }
 
   def Block = rule {
-    BlockName ~ "{" ~ Nodes ~ "}" ~ MayBeWS
+    BlockName ~ MayBeWS ~ "{" ~ "xxx" ~"}"
+//    BlockName ~ MayBeWS ~ "{" ~ Nodes ~"}" ~ MayBeWS
   }
 
   def Root = rule {
-    Nodes
+    MayBeWS ~ Nodes ~ MayBeWS ~ EOI
   }
 }
