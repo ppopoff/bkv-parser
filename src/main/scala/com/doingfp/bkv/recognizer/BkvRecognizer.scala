@@ -2,6 +2,9 @@ package com.doingfp.bkv.recognizer
 
 import org.parboiled2._
 
+/**
+ * Constants
+ */
 object BkvRecognizer {
   val WhitespaceChars = "\n\t "
   val Identifier      = CharPredicate.AlphaNum ++ '.' ++ '_'
@@ -12,6 +15,13 @@ object BkvRecognizer {
   val BlockEnding     = '}'
 }
 
+/**
+ * A recognizer for simplified version of BKV's grammar
+ * (no support for string escaping).
+ *
+ * Recognizer != Parser. It doesn't extract any data.
+ * It just matches the input
+ */
 class BkvRecognizer(val input: ParserInput) extends Parser {
   import BkvRecognizer._
 
