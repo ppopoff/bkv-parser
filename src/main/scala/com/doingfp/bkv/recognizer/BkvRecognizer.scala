@@ -23,7 +23,7 @@ object BkvRecognizer {
  * It just matches the input
  */
 class BkvRecognizer(val input: ParserInput) extends Parser {
-  import BkvRecognizer._
+  import SimplifiedBkvRecognizer._
 
   def WhiteSpace = rule {
     anyOf(WhitespaceChars)
