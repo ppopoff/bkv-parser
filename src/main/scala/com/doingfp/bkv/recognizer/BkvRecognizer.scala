@@ -8,7 +8,6 @@ import org.parboiled2._
 object BkvRecognizer {
   val WhitespaceChars = "\n\t "
   val Identifier      = CharPredicate.AlphaNum ++ '.' ++ '_'
-  val ValueSymbol     = CharPredicate.Visible
   val KeySymbol       = Identifier
   val BlockNameSymbol = Identifier
   val BlockBeginning  = '{'
@@ -16,13 +15,12 @@ object BkvRecognizer {
 }
 
 /**
- * A recognizer for simplified version of BKV's grammar
- * (no support for string escaping).
+ * A recognizer for BKV's grammar
  *
  * Recognizer != Parser. It doesn't extract any data.
  * It just matches the input
  */
-class BkvRecognizer(val input: ParserInput) extends Parser {
+class BkvRecognizer(val input: ParserInput) extends Parser with DoubleQuotationRecognizer {
   import SimplifiedBkvRecognizer._
 
   def WhiteSpace = rule {
@@ -42,7 +40,7 @@ class BkvRecognizer(val input: ParserInput) extends Parser {
   }
 
   def Value = rule {
-    oneOrMore(ValueSymbol)
+    DoubleQuotedString
   }
 
   def KeyValuePair = rule {
