@@ -3,6 +3,7 @@ package com.doingfp.bkv.parser
 import org.parboiled2._
 
 object QuotedStringSupport {
+
   /**
    * Look here for the example.
    * https://en.wikipedia.org/wiki/Escape_sequences_in_C#Table_of_escape_sequences
