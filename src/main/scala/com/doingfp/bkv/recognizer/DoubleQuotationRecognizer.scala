@@ -9,23 +9,22 @@ import org.parboiled2._
 trait DoubleQuotationRecognizer { this: Parser =>
 
   /**
-   * Look here for the example. There's no need to escape single quotation, but
-   * I found useful to escape unicode characters in this manner '\u1234'.
-   * That's why u letter was added.
+   * Look here for the example.
    * https://en.wikipedia.org/wiki/Escape_sequences_in_C#Table_of_escape_sequences
    */
-  val CharsToBeEscaped = "abfnrtv\\\"u"
-  val AllowedChars = CharPredicate.Printable -- '"' -- '\\'
+  val CharsToBeEscaped = "abfnrtv\\\""
+  val BackSlash = '\\'
+
+  /**
+   * All printable characters except double quotation and backslash
+   */
+  val AllowedChars = CharPredicate.Printable -- BackSlash -- '"'
 
   def DoubleQuotedString: Rule0 = rule {
-    '"' ~ DoubleQuotedStringBody ~ '"'
+    '"' ~ oneOrMore(AllowedChars | DoubleQuotedStringEscapeSequence) ~ '"'
   }
 
   def DoubleQuotedStringEscapeSequence = rule {
     '\\' ~ anyOf(CharsToBeEscaped)
-  }
-
-  def DoubleQuotedStringBody = rule {
-    oneOrMore(AllowedChars | DoubleQuotedStringEscapeSequence)
   }
 }
