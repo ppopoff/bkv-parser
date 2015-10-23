@@ -2,11 +2,7 @@ package com.doingfp.bkv.recognizer
 
 import org.parboiled2._
 
-/**
- * Support for strings with double quotations
- * and c-like escaping rules
- */
-trait DoubleQuotationRecognizer { this: Parser =>
+object DoubleQuotationRecognizer {
 
   /**
    * Look here for the example.
@@ -19,9 +15,22 @@ trait DoubleQuotationRecognizer { this: Parser =>
    * All printable characters except double quotation and backslash
    */
   val AllowedChars = CharPredicate.Printable -- BackSlash -- '"'
+}
+
+
+/**
+ * Support for strings with double quotations
+ * and c-like escaping rules
+ */
+trait DoubleQuotationRecognizer { this: Parser =>
+  import DoubleQuotationRecognizer._
 
   def DoubleQuotedString: Rule0 = rule {
-    '"' ~ oneOrMore(AllowedChars | DoubleQuotedStringEscapeSequence) ~ '"'
+    '"' ~ QuotedStringContent ~ '"'
+  }
+
+  def QuotedStringContent: Rule0 = rule {
+    oneOrMore(AllowedChars | DoubleQuotedStringEscapeSequence)
   }
 
   def DoubleQuotedStringEscapeSequence = rule {
