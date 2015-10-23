@@ -21,7 +21,7 @@ object BkvRecognizer {
  * It just matches the input
  */
 class BkvRecognizer(val input: ParserInput) extends Parser with DoubleQuotationRecognizer {
-  import SimplifiedBkvRecognizer._
+  import BkvRecognizer._
 
   def WhiteSpace = rule {
     anyOf(WhitespaceChars)
