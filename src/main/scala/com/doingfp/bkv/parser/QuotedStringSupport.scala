@@ -25,8 +25,8 @@ object QuotedStringSupport {
 trait QuotedStringSupport { this: Parser =>
   import QuotedStringSupport._
 
-  def DoubleQuotedString: Rule1[String] = rule {
-    '"' ~ capture(QuotedStringContent)  ~ '"'
+  def DoubleQuotedString: Rule0 = rule {
+    '"' ~ QuotedStringContent  ~ '"'
   }
 
   def QuotedStringContent: Rule0 = rule {
