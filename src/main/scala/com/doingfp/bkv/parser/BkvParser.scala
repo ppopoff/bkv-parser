@@ -36,31 +36,31 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Key = rule {
-    oneOrMore(KeySymbol)
+    capture(KeySymbol.+)
   }
 
   def Value = rule {
-    DoubleQuotedString
+    capture(DoubleQuotedString.+)
   }
 
-  def KeyValuePair = rule {
-    Key ~ MayBeWS ~ "=" ~ MayBeWS ~ Value
+  def KeyValuePair: Rule1[AstNode] = rule {
+    Key ~ MayBeWS ~ "=" ~ MayBeWS ~ Value ~> KeyValueNode
   }
 
-  def Block = rule {
-    BlockName ~ MayBeWS ~ BlockBeginning ~ Nodes ~ BlockEnding
+  def Block: Rule1[AstNode] = rule {
+    BlockName ~ MayBeWS ~ BlockBeginning ~ Nodes ~ BlockEnding ~> BlockNode
   }
 
   def BlockName = rule {
-    oneOrMore(BlockNameSymbol)
+    capture(BlockNameSymbol.+)
   }
 
   // Recursive call. Type MUST be specified
-  def Node: Rule0 = rule {
+  def Node: Rule1[AstNode] = rule {
     KeyValuePair | Block
   }
 
-  def Nodes = rule {
+  def Nodes: Rule1[Seq[AstNode]] = rule {
     MayBeWS ~
       zeroOrMore(Node).separatedBy(NewLine ~ MayBeWS) ~
     MayBeWS
