@@ -39,8 +39,8 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
     capture(KeySymbol.+)
   }
 
-  def Value = rule {
-    capture(DoubleQuotedString.+)
+  def Value: Rule1[String] = rule {
+    CapturableDoubleQuotedString
   }
 
   def KeyValuePair: Rule1[AstNode] = rule {
@@ -66,7 +66,7 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
     MayBeWS
   }
 
-  def Root = rule {
+  def Root: Rule1[Seq[AstNode]] = rule {
     MayBeWS ~ Nodes ~ MayBeWS ~ EOI
   }
 }
