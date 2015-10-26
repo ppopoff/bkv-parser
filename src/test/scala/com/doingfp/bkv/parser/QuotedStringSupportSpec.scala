@@ -31,7 +31,7 @@ case object Test {
 
 
 @RunWith(classOf[JUnitRunner])
-class DoubleQuotationRecognizerSpec extends FunSpec with Matchers {
+class DoubleStringSupportSpec extends FunSpec with Matchers {
 
     it ("should not match unquoted string") {
       val unquotedString = "unquoted string"
