@@ -5,7 +5,11 @@ import org.junit.runner.RunWith
 import org.scalatest.{Matchers, FunSpec}
 import org.scalatest.junit.JUnitRunner
 
-
+/**
+ * Tests parser as whole system. Parser components are tested
+ * in BkvParserSpec
+ * @author ppopoff
+ */
 @RunWith(classOf[JUnitRunner])
 class BkvParserTest extends FunSpec with Matchers {
   describe("Bkv format parser") {
@@ -34,7 +38,7 @@ class BkvParserTest extends FunSpec with Matchers {
     }
 
     describe("The list of nodes (Nodes rule)") {
-      it ("shoud accept all known type of nodes") {
+      it ("should accept all known types of nodes") {
         val text =
           """|key1="value1"
              |nodename {
@@ -185,6 +189,7 @@ class BkvParserTest extends FunSpec with Matchers {
             | key3 = "value3"
             |}
           """.stripMargin
+
         val parsingResult = new BkvParser(block).Root.run()
         parsingResult.isSuccess shouldBe true
         parsingResult.get.head match {
@@ -193,7 +198,7 @@ class BkvParserTest extends FunSpec with Matchers {
         }
       }
 
-      it ("should parse single line block") {
+      it ("should parse single line block definition") {
         val singleLineBlock = "block { key = \"value\" }"
         val parsingResult = new BkvParser(singleLineBlock).Root.run()
 
@@ -238,7 +243,6 @@ class BkvParserTest extends FunSpec with Matchers {
             }
         }
       } // nested blocks test
-
     } // testing Block node
   }
 }
