@@ -1,8 +1,8 @@
 package com.doingfp.bkv.parser
 
-trait AstNode {
-  val name: String
-  val isBlockNode: Boolean
+sealed trait AstNode {
+  def name: String
+  def isBlockNode: Boolean
 }
 
 
