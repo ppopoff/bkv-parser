@@ -6,7 +6,7 @@ import org.scalatest.{FunSpec, Matchers}
 
 
 @RunWith(classOf[JUnitRunner])
-class BkvParserSpec extends FunSpec with Matchers {
+class BkvParserComponentsSpec extends FunSpec with Matchers {
   describe ("Companion object") {
     describe ("Key symbol") {
       it ("should not contain whitespace characters") {
