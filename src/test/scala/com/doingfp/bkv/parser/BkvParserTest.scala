@@ -176,7 +176,9 @@ class BkvParserTest extends FunSpec with Matchers {
             case KeyValueNode(k, v) =>
               k shouldBe "key"
               v shouldBe "value"
+            case _ => fail("Block node was expected")
           }
+          case _ => fail("We were expecting block node")
         }
       }
 
@@ -195,6 +197,7 @@ class BkvParserTest extends FunSpec with Matchers {
         parsingResult.get.head match {
           case BlockNode(name, values) =>
             values should have length 3
+          case _ => fail("block node was expected")
         }
       }
 
@@ -209,6 +212,7 @@ class BkvParserTest extends FunSpec with Matchers {
             blockName shouldBe "block"
             nestedNodes should have length 1
             nestedNodes.head should equal (KeyValueNode("key", "value"))
+          case _ => fail("not a block node")
         }
       }
 
@@ -240,7 +244,9 @@ class BkvParserTest extends FunSpec with Matchers {
                 nestedNodes should have length 1
 
                 nestedNodes.head shouldBe KeyValueNode("can_be_nested", "true")
+              case _ => fail("not block node")
             }
+          case _ => fail("not block node")
         }
       } // nested blocks test
     } // testing Block node
