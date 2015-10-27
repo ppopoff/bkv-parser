@@ -56,7 +56,7 @@ class BkvParserSpec extends FunSpec with Matchers {
       }
     }
 
-    // todo: check are they fake?
+    // todo: add testable class
     describe("Optional whitespaces") {
       describe ("matches zero or more whitespace chars") {
         it ("should match no whitespace chars at all") {
@@ -89,12 +89,24 @@ class BkvParserSpec extends FunSpec with Matchers {
       }
     }
 
-//    //todo: are they fake? add EOI somewhere
+
     describe("Key") {
-      it ("should follow the same rules as identifier") {
-//        new BkvParser("valid_Key0123").Key.run().isSuccess shouldBe true
-        new BkvParser("invalid Key0123").Key.run().isSuccess shouldBe true
+      it ("should contain only valid symbols") {
+        //todo: add testable class
+        new BkvParser("valid_Key0123").Root.run().isSuccess shouldBe true
+      }
+
+      it ("should fail at whitespaces") {
+        new BkvParser("invalid Key0123").Root.run().isFailure shouldBe true
       }
     }
+
+    describe("Value") {
+      it ("must be a quoted string") {
+        val invalidPair = "key = value"
+        new BkvParser(invalidPair).Root.run().isFailure shouldBe true
+      }
+    }
+
   }
 }
