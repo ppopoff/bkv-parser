@@ -17,7 +17,7 @@ class TestableDoubleQuotedStringRecognizer(val input: ParserInput)
 extends Parser with QuotedStringSupport {
 
   def TestableDoubleQuotedString = rule {
-    DoubleQuotedString ~ EOI
+    QuotedStringRecognizer ~ EOI
   }
 }
 

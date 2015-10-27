@@ -40,7 +40,7 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Value: Rule1[String] = rule {
-    CapturableDoubleQuotedString
+    QuotedString
   }
 
   def KeyValuePair: Rule1[AstNode] = rule {
