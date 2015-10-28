@@ -67,6 +67,6 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Root: Rule1[Seq[AstNode]] = rule {
-    MayBeWS ~ Nodes ~ MayBeWS ~ EOI
+    Nodes ~ EOI
   }
 }
