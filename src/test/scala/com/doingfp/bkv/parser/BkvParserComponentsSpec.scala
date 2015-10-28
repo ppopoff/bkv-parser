@@ -39,72 +39,96 @@ class BkvParserComponentsSpec extends FunSpec with Matchers {
 
   describe ("Bkv Recognizer rules") {
     describe("WhiteSpace characters") {
+      def testWhitespace(input: String) =
+        new TestableBkvParser(input).TestableWhitespace.run()
+
       it ("should fail on empty input") {
-        new BkvParser("").WhiteSpace.run().isFailure shouldBe true
+        testWhitespace("").isFailure shouldBe true
       }
 
       it ("should recognize whitespace char") {
-        new BkvParser(" ").WhiteSpace.run().isSuccess shouldBe true
+        testWhitespace(" ").isSuccess shouldBe true
       }
 
       it ("should recognize \\n as whitespace char") {
-        new BkvParser("\n").WhiteSpace.run().isSuccess shouldBe true
+        testWhitespace("\n").isSuccess shouldBe true
       }
 
       it ("should recognize \\t as whitespace char") {
-        new BkvParser("\t").WhiteSpace.run().isSuccess shouldBe true
+        testWhitespace("\t").isSuccess shouldBe true
       }
     }
 
-    // todo: add testable class
     describe("Optional whitespaces") {
       describe ("matches zero or more whitespace chars") {
+        def testOptionalWhitespaces(input: String) =
+          new TestableBkvParser(input).TestableOptionalWhitespaces.run()
+
         it ("should match no whitespace chars at all") {
-          new BkvParser("").MayBeWS.run().isSuccess shouldBe true
+          testOptionalWhitespaces("").isSuccess shouldBe true
         }
 
         it ("should match a single whitespace char") {
-          new BkvParser(" ").MayBeWS.run().isSuccess shouldBe true
+          testOptionalWhitespaces(" ").isSuccess shouldBe true
         }
 
         it ("should match a multiple whitespace chars") {
-          new BkvParser("   ").MayBeWS.run().isSuccess shouldBe true
+          testOptionalWhitespaces("   ").isSuccess shouldBe true
         }
 
         it ("should match different combinations of whitespace characters") {
-          new BkvParser("\\t\\n  ").MayBeWS.run().isSuccess shouldBe true
+          testOptionalWhitespaces("\t\n  ").isSuccess shouldBe true
         }
       }
     }
 
     describe("Newline") {
       describe("Unix/Linux newline") {
+        def testNewLine(input: String) =
+          new TestableBkvParser(input).TestableNewLine.run()
+
         it ("should match unix/linux newline") {
-          new BkvParser("\n").NewLine.run().isSuccess shouldBe true
+          testNewLine("\n").isSuccess shouldBe true
         }
 
         it ("should match Windows type of newline") {
-          new BkvParser("\r\n").NewLine.run().isSuccess shouldBe true
+          testNewLine("\r\n").isSuccess shouldBe true
         }
       }
     }
 
-
     describe("Key") {
+      def testKey(input: String) =
+        new TestableBkvParser(input).TestableKey.run()
+
       it ("should contain only valid symbols") {
-        //todo: add testable class
-        new BkvParser("valid_Key0123").Root.run().isSuccess shouldBe true
+        testKey("valid_Key0123").isSuccess shouldBe true
       }
 
-      it ("should fail at whitespaces") {
-        new BkvParser("invalid Key0123").Root.run().isFailure shouldBe true
+      it ("should not contain whitespaces") {
+        testKey("invalid Key0123").isFailure shouldBe true
+      }
+
+      it ("should not contain unallowed symbols") {
+        testKey(";").isFailure shouldBe true
+        testKey("()").isFailure shouldBe true
+        testKey("{}").isFailure shouldBe true
+        testKey("/").isFailure shouldBe true
+        testKey("!@#$%^&*").isFailure shouldBe true
       }
     }
 
     describe("Value") {
+
+      def testValue(input: String) =
+        new TestableBkvParser(input).TestableValue.run()
+
       it ("must be a quoted string") {
-        val invalidPair = "key = value"
-        new BkvParser(invalidPair).Root.run().isFailure shouldBe true
+        val invalidPair = "value"
+        testValue(invalidPair).isFailure shouldBe true
+
+        val validPair = "\"value\""
+        testValue(validPair).isSuccess shouldBe true
       }
     }
 
