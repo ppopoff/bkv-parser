@@ -34,7 +34,7 @@ trait QuotedStringSupport { this: Parser =>
   }
 
   def QuotedStringContent: Rule0 = rule {
-    oneOrMore(AllowedChars | DoubleQuotedStringEscapeSequence)
+    zeroOrMore(AllowedChars | DoubleQuotedStringEscapeSequence)
   }
 
   def DoubleQuotedStringEscapeSequence = rule {
