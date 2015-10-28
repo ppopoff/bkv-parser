@@ -5,6 +5,14 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 
+/**
+ * Tests parser internals
+ *  - whitespace recognition
+ *  - optional whitespace's behaviour
+ *  - newline recognition
+ *  - key
+ *  - value
+ */
 @RunWith(classOf[JUnitRunner])
 class BkvParserComponentsSpec extends FunSpec with Matchers {
   describe ("Companion object") {
@@ -119,7 +127,6 @@ class BkvParserComponentsSpec extends FunSpec with Matchers {
     }
 
     describe("Value") {
-
       def testValue(input: String) =
         new TestableBkvParser(input).TestableValue.run()
 
@@ -131,6 +138,5 @@ class BkvParserComponentsSpec extends FunSpec with Matchers {
         testValue(validPair).isSuccess shouldBe true
       }
     }
-
   }
 }
