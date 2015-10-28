@@ -6,6 +6,14 @@ import org.parboiled2._
  * Constants
  */
 object BkvParser {
+
+  /**
+   * Name of the root node. It is empty string.
+   * Nice placeholder for a name, and impossible for users to set.
+   * because identifier can not be an empty string.
+   */
+  val RootNodeName = ""
+
   val WhitespaceChars = "\n\t "
   val Identifier      = CharPredicate.AlphaNum ++ '.' ++ '_'
   val KeySymbol       = Identifier
@@ -67,6 +75,6 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Root: Rule1[AstNode] = rule {
-    Nodes ~ EOI ~> (nodes => BlockNode("root", nodes))
+    Nodes ~ EOI ~> {nodes: Seq[AstNode] => BlockNode(RootNodeName, nodes)}
   }
 }
