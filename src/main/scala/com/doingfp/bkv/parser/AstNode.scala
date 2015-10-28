@@ -1,6 +1,6 @@
 package com.doingfp.bkv.parser
 
-sealed trait AstNode {
+sealed trait AstNode extends NodeAccessDsl {
   def name: String
   def isBlockNode: Boolean
 }
