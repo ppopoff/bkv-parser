@@ -3,36 +3,48 @@ package com.doingfp.bkv.parser
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
-
-/**
- * To test a trait we need to create a mock class
- */
 import org.parboiled2._
 
-/**
- * Parser wrapper that mixes the the testable trait, and enhances it
- * by adding EOI at the end of the main rule
- */
-class TestableDoubleQuotedStringRecognizer(val input: ParserInput)
-extends Parser with QuotedStringSupport {
-
-  def TestableDoubleQuotedString = rule {
-    QuotedStringRecognizer ~ EOI
-  }
-}
-
-case object Test {
-  /**
-   * Small helper method that creates Testable recognizer for
-   */
-  def apply(s: String) =
-    new TestableDoubleQuotedStringRecognizer(s).TestableDoubleQuotedString.run()
-}
 
 
 @RunWith(classOf[JUnitRunner])
-class DoubleQuotedStringSupportSpec extends FunSpec with Matchers {
+class QuotedStringSupportSpec extends FunSpec with Matchers {
+
+  /**
+   * Parser wrapper that mixes the the testable trait, and enhances it
+   * by adding EOI at the end of the main rule
+   */
+  class TestableDoubleQuotedStringRecognizer(val input: ParserInput)
+  extends Parser with QuotedStringSupport {
+
+    def TestableDoubleQuotedStringRecognizer = rule {
+      QuotedStringRecognizer ~ EOI
+    }
+
+    def TestableQuotedString: Rule1[String] = rule {
+      '"' ~ capture(QuotedStringContent)  ~ '"' ~ EOI
+    }
+  }
+
+  case object Test {
+    /**
+     * Small helper method that creates Testable recognizer for
+     */
+    def apply(s: String) =
+      new TestableDoubleQuotedStringRecognizer(s).TestableDoubleQuotedStringRecognizer.run()
+  }
+
+
   describe("Double Quotation support") {
+
+    it ("can be empty") {
+      val emptyString = "\"\""
+      val parsingResult = new TestableDoubleQuotedStringRecognizer(emptyString).TestableQuotedString.run()
+
+      parsingResult.isSuccess shouldBe true
+      parsingResult.get should be ("")
+    }
+
     it ("should not match unquoted string") {
       val unquotedString = "unquoted string"
       Test(unquotedString).isFailure shouldBe true
