@@ -55,6 +55,15 @@ trait NodeAccessDsl { this: AstNode =>
   def blocks(name: String): Seq[BlockNode] =
     blocks filter (_.name == name)
 
+  //TODO: Comment
+  /**
+   *
+   * @param name
+   * @return
+   */
+  def block(name: String): Option[BlockNode] =
+    blocks find (_.name == name)
+
 
   /**
    * @return value, if key-value pair
