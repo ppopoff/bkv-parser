@@ -79,10 +79,9 @@ class BkvParserTest extends FunSpec with Matchers {
 
         parsingResult.isSuccess shouldBe true
         val root = parsingResult.get
-        //FIXME
-//        parsingResult.get should have length 3
-//        parsingResult.get(1).isBlockNode shouldBe true
-//        parsingResult.get(2).isBlockNode shouldBe false
+
+        root.blocks should have size 1
+        root.pairs  should have size 2
       }
 
       it ("should handle spaces between nodes") {
@@ -99,10 +98,10 @@ class BkvParserTest extends FunSpec with Matchers {
         val parsingResult = new BkvParser(text).Root.run()
 
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get should have length 3
-//        parsingResult.get(1).isBlockNode shouldBe true
-//        parsingResult.get(2).isBlockNode shouldBe false
+        val root = parsingResult.get
+
+        root.blocks should have size 1
+        root.pairs  should have size 2
       }
 
       it ("should accept Newline as the ONLY separator between Nodes") {
@@ -116,11 +115,13 @@ class BkvParserTest extends FunSpec with Matchers {
         val kvWithoutWhitespaces = "key=\"value\""
         val kvWithWhitespacesBetween = "key = \"value\""
 
-        val withoutWhitespaces = new BkvParser(kvWithoutWhitespaces).Root.run()
-        val withWhitespaces = new BkvParser(kvWithWhitespacesBetween).Root.run()
+        val withoutWhitespaces =
+          new BkvParser(kvWithoutWhitespaces).Root.run().get
 
-        //FIXME
-//        withoutWhitespaces.get.head shouldBe withWhitespaces.get.head
+        val withWhitespaces =
+          new BkvParser(kvWithWhitespacesBetween).Root.run().get
+
+        withoutWhitespaces.pairs shouldBe withWhitespaces.pairs
       }
 
       it ("should handle possible indentations before kv pair definition") {
