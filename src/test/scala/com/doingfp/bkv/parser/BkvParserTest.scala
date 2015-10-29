@@ -130,15 +130,22 @@ class BkvParserTest extends FunSpec with Matchers {
         val withSpaceIndent = "    indentation = \"true\""
         val withNewLineIndent = "\nindentation = \"true\""
 
-        val expectedResult = Success(
-          Vector(KeyValueNode("indentation", "true"))
-        )
+        val expectedResult = KeyValueNode("indentation", "true")
 
-        //FIXME
-//        new BkvParser(withTabIndent).Root.run() should be (expectedResult)
-//        new BkvParser(withMultipleTabIndent).Root.run() should be (expectedResult)
-//        new BkvParser(withSpaceIndent).Root.run() should be (expectedResult)
-//        new BkvParser(withNewLineIndent).Root.run() should be (expectedResult)
+        def getFirstKeyNodePair(text: String): KeyValueNode =
+          new BkvParser(text).Root.run().get.pairs.head
+
+        val astWithTabIndent = getFirstKeyNodePair(withTabIndent)
+        astWithTabIndent should be (expectedResult)
+
+        val astWithMultipleTabIndent = getFirstKeyNodePair(withMultipleTabIndent)
+        astWithMultipleTabIndent should be (expectedResult)
+
+        val astWithSpaceIndent = getFirstKeyNodePair(withSpaceIndent)
+        astWithSpaceIndent should be (expectedResult)
+
+        val astWithNewLineIndent = getFirstKeyNodePair(withNewLineIndent)
+        astWithNewLineIndent should be (expectedResult)
       }
 
       it ("should be possible to move value to the next line") {
@@ -160,9 +167,12 @@ class BkvParserTest extends FunSpec with Matchers {
           )
 
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get should have length 2
-//        parsingResult.get should equal (expectedAst)
+        val root = parsingResult.get
+
+        root.pairs should have length 2
+        root.blocks should have length 0
+
+        root.pairs should equal (expectedAst)
       }
     }
 
@@ -174,11 +184,12 @@ class BkvParserTest extends FunSpec with Matchers {
         val parsingResult = new BkvParser(block).Root.run()
 
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get should have length 1
+        val root = parsingResult.get
+        val nestedNodeContent = root.block("block_name") flatMap { block =>
+          block pair "visible"
+        }
 
-//        val expectedNode = BlockNode("block_name", Vector(KeyValueNode("visible", "true")))
-//        parsingResult.get.head should equal (expectedNode)
+        nestedNodeContent shouldBe Some(KeyValueNode("visible", "true"))
       }
 
       it ("should handle key value pair on the last line near the closing bracket") {
@@ -215,12 +226,10 @@ class BkvParserTest extends FunSpec with Matchers {
 
         val parsingResult = new BkvParser(block).Root.run()
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get.head match {
-//          case BlockNode(name, values) =>
-//            values should have length 3
-//          case _ => fail("block node was expected")
-//        }
+
+        val root = parsingResult.get
+
+        root.block("name").get.pairs should have length 3
       }
 
       it ("should parse single line block definition") {
