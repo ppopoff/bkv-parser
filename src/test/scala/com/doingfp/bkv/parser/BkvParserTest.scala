@@ -1,9 +1,9 @@
 package com.doingfp.bkv.parser
 
-import scala.util.Success
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, FunSpec}
 import org.scalatest.junit.JUnitRunner
+
 
 /**
  * Tests parser as whole system. Parser components are tested
@@ -201,17 +201,12 @@ class BkvParserTest extends FunSpec with Matchers {
 
         val parsingResult = new BkvParser(block).Root.run()
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get should have length 1
-//        parsingResult.get.head match {
-//          case BlockNode(name, values) => values.head match {
-//            case KeyValueNode(k, v) =>
-//              k shouldBe "key"
-//              v shouldBe "value"
-//            case _ => fail("Block node was expected")
-//          }
-//          case _ => fail("We were expecting block node")
-//        }
+
+        val root = parsingResult.get
+        val pairs = root.block("name").get.pairs
+
+        pairs should have length 1
+        pairs.head should be (KeyValueNode("key", "value"))
       }
 
       it ("should handle multiple nested nodes inside block") {
@@ -237,15 +232,9 @@ class BkvParserTest extends FunSpec with Matchers {
         val parsingResult = new BkvParser(singleLineBlock).Root.run()
 
         parsingResult.isSuccess shouldBe true
-        //FIXME
-//        parsingResult.get should have size 1
-//        parsingResult.get.head match {
-//          case BlockNode(blockName, nestedNodes) =>
-//            blockName shouldBe "block"
-//            nestedNodes should have length 1
-//            nestedNodes.head should equal (KeyValueNode("key", "value"))
-//          case _ => fail("not a block node")
-//        }
+        val root = parsingResult.get
+        val nestedNode = root.block("block").get.pair("key").get
+        nestedNode should be (KeyValueNode("key", "value"))
       }
 
       it ("should handle nested blocks") {
@@ -260,28 +249,13 @@ class BkvParserTest extends FunSpec with Matchers {
         val parsingResult = new BkvParser(singleLineBlock).Root.run()
 
         parsingResult.isSuccess shouldBe true
+        val root = parsingResult.get
 
-        //FIXME
-        // There should be only one block
-//        parsingResult.get should have size 1
+        val nestedKeyValuePair =
+            root.block("block").get.block("nested_block").get.pair("can_be_nested").get
 
-//        parsingResult.get.head match {
-//          case BlockNode(name, nodes) =>
-//            name shouldBe "block"
-//            nodes should have length 1
-//
-//             Nested block level 1
-//            nodes.head match {
-//              case BlockNode(nestedName, nestedNodes) =>
-//                nestedName shouldBe "nested_block"
-//                nestedNodes should have length 1
-//
-//                nestedNodes.head shouldBe KeyValueNode("can_be_nested", "true")
-//              case _ => fail("not block node")
-//            }
-//          case _ => fail("not block node")
-//        }
-      } // nested blocks test
-    } // testing Block node
+        nestedKeyValuePair should equal (KeyValueNode("can_be_nested", "true"))
+      }
+    }
   }
 }
