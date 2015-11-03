@@ -18,29 +18,29 @@ class BkvParserComponentsSpec extends FunSpec with Matchers {
   describe ("Companion object") {
     describe ("Key symbol") {
       it ("should not contain whitespace characters") {
-        BkvParser.KeySymbol.matchesAny(" \t\n") shouldBe false
+        BkvParser.KeyChar.matchesAny(" \t\n") shouldBe false
       }
 
       it ("may contain any alphanumeric symbol, or underscore") {
-        BkvParser.KeySymbol.matchesAll("AaZz0123456789_") shouldBe true
+        BkvParser.KeyChar.matchesAll("AaZz0123456789_") shouldBe true
       }
 
       it ("should fail for other printable symbols") {
-        BkvParser.BlockNameSymbol.matchesAny(";/#-=(){}[]`!") shouldBe false
+        BkvParser.BlockNameChar.matchesAny(";/#-=(){}[]`!") shouldBe false
       }
     }
 
     describe("Block name symbol") {
       it ("should not contain whitespace characters") {
-        BkvParser.BlockNameSymbol.matchesAny(" \t\n") shouldBe false
+        BkvParser.BlockNameChar.matchesAny(" \t\n") shouldBe false
       }
 
       it ("may contain any alphanumeric symbol, or underscore, or dot") {
-        BkvParser.BlockNameSymbol.matchesAll("AaZz0123456789_.") shouldBe true
+        BkvParser.BlockNameChar.matchesAll("AaZz0123456789_.") shouldBe true
       }
 
       it ("should fail for other printable symbols") {
-        BkvParser.BlockNameSymbol.matchesAny(";/#-=(){}[]`!") shouldBe false
+        BkvParser.BlockNameChar.matchesAny(";/#-=(){}[]`!") shouldBe false
       }
     }
   }
