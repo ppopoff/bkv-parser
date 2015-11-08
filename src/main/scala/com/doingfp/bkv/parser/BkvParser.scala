@@ -35,11 +35,11 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
     anyOf(WhitespaceChars)
   }
 
-  def MayBeWS = rule {
+  def OptWs = rule {
     zeroOrMore(WhiteSpace)
   }
 
-  def NewLine = rule {
+  def Newline = rule {
     optional('\r') ~ '\n'
   }
 
@@ -52,11 +52,11 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def KeyValuePair: Rule1[AstNode] = rule {
-    Key ~ MayBeWS ~ "=" ~ MayBeWS ~ Value ~> KeyValueNode
+    Key ~ OptWs ~ "=" ~ OptWs ~ Value ~> KeyValueNode
   }
 
   def Block: Rule1[AstNode] = rule {
-    BlockName ~ MayBeWS ~ BlockBeginning ~ Nodes ~ BlockEnding ~> BlockNode
+    BlockName ~ OptWs ~ BlockBeginning ~ Nodes ~ BlockEnding ~> BlockNode
   }
 
   def BlockName = rule {
@@ -69,9 +69,9 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Nodes: Rule1[Seq[AstNode]] = rule {
-    MayBeWS ~
-      zeroOrMore(Node).separatedBy(NewLine ~ MayBeWS) ~
-    MayBeWS
+    OptWs ~
+      zeroOrMore(Node).separatedBy(Newline ~ OptWs) ~
+    OptWs
   }
 
   def Root: Rule1[AstNode] = rule {

@@ -9,7 +9,7 @@ import org.parboiled2.{Rule1, ParserInput}
  */
 class TestableBkvParser(input: ParserInput) extends BkvParser(input) {
   def TestableNewLine = rule {
-    NewLine ~ EOI
+    Newline ~ EOI
   }
 
   def TestableWhitespace = rule {
@@ -17,7 +17,7 @@ class TestableBkvParser(input: ParserInput) extends BkvParser(input) {
   }
 
   def TestableOptionalWhitespaces = rule {
-    MayBeWS ~ EOI
+    OptWs ~ EOI
   }
 
   def TestableKey: Rule1[String] = rule {
