@@ -15,9 +15,14 @@ object BkvParser {
   val RootNodeName = ""
 
   val WhitespaceChars = "\n\t "
-  val IdentifierChar  = CharPredicate.AlphaNum ++ '.' ++ '_'
-  val KeyChar         = IdentifierChar
-  val BlockNameChar   = IdentifierChar
+
+  /**
+   * Identifier must start only with a letter or underscore,
+   * and contain latin letters, digits, underscore and dots
+   */
+  val IdentifierFirstChar = CharPredicate.Alpha ++ '_'
+  val IdentifierChar      = CharPredicate.AlphaNum ++ '.' ++ '_'
+
   val BlockBeginning  = '{'
   val BlockEnding     = '}'
 }
@@ -43,8 +48,12 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
     optional('\r') ~ '\n'
   }
 
+  def Identifier = rule {
+    IdentifierFirstChar ~ zeroOrMore(IdentifierChar)
+  }
+
   def Key = rule {
-    capture(KeyChar.+)
+    capture(Identifier)
   }
 
   def Value: Rule1[String] = rule {
@@ -60,7 +69,7 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def BlockName = rule {
-    capture(BlockNameChar.+)
+    capture(Identifier)
   }
 
   // Recursive call. Type MUST be specified
