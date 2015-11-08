@@ -16,6 +16,10 @@ class TestableBkvParser(input: ParserInput) extends BkvParser(input) {
     WhiteSpace ~ EOI
   }
 
+  def TestableIdentifier = rule {
+    Identifier ~ EOI
+  }
+
   def TestableOptionalWhitespaces = rule {
     OptWs ~ EOI
   }
