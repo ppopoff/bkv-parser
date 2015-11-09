@@ -10,41 +10,10 @@ import org.scalatest.{FunSpec, Matchers}
  *  - whitespace recognition
  *  - optional whitespace's behaviour
  *  - newline recognition
- *  - key
- *  - value
+ *  - key and block name
  */
 @RunWith(classOf[JUnitRunner])
 class BkvParserComponentsSpec extends FunSpec with Matchers {
-  describe ("Companion object") {
-    describe ("Key symbol") {
-      it ("should not contain whitespace characters") {
-        BkvParser.KeyChar.matchesAny(" \t\n") shouldBe false
-      }
-
-      it ("may contain any alphanumeric symbol, or underscore") {
-        BkvParser.KeyChar.matchesAll("AaZz0123456789_") shouldBe true
-      }
-
-      it ("should fail for other printable symbols") {
-        BkvParser.BlockNameChar.matchesAny(";/#-=(){}[]`!") shouldBe false
-      }
-    }
-
-    describe("Block name symbol") {
-      it ("should not contain whitespace characters") {
-        BkvParser.BlockNameChar.matchesAny(" \t\n") shouldBe false
-      }
-
-      it ("may contain any alphanumeric symbol, or underscore, or dot") {
-        BkvParser.BlockNameChar.matchesAll("AaZz0123456789_.") shouldBe true
-      }
-
-      it ("should fail for other printable symbols") {
-        BkvParser.BlockNameChar.matchesAny(";/#-=(){}[]`!") shouldBe false
-      }
-    }
-  }
-
   describe ("Bkv Recognizer rules") {
     describe("WhiteSpace characters") {
       def testWhitespace(input: String) =
@@ -65,6 +34,61 @@ class BkvParserComponentsSpec extends FunSpec with Matchers {
       it ("should recognize \\t as whitespace char") {
         testWhitespace("\t").isSuccess shouldBe true
       }
+    }
+
+    describe("Identifier the same rules for both Block name and Key") {
+      def testIdentifier(input: String) =
+        new TestableBkvParser(input).TestableIdentifier.run()
+
+      describe("the first character of the identifier") {
+        describe("Allowed chars") {
+          it ("can start with underscore char") {
+            testIdentifier("_validId").isSuccess shouldBe true
+          }
+
+          it ("can start with any alphabetic character") {
+            testIdentifier("isValidIdentifier").isSuccess shouldBe true
+            testIdentifier("ValidIdentifier").isSuccess shouldBe true
+          }
+        }
+
+        describe("Forbidden chars") {
+          it ("should not start with number") {
+            testIdentifier("12wrongId").isFailure shouldBe true
+          }
+
+          it ("should not start with dot character") {
+            testIdentifier(".wrong_id").isFailure shouldBe true
+          }
+
+          it ("should start only with letters") {
+            testIdentifier("$wrong_id").isFailure shouldBe true
+            testIdentifier("#wrong_id").isFailure shouldBe true
+            testIdentifier("%wrong_id").isFailure shouldBe true
+            testIdentifier("!wrong_id").isFailure shouldBe true
+          }
+        }
+      }
+
+      describe("Identifier allowed characters") {
+        it ("may contain dot symbol is allowed from the 2nd character") {
+          testIdentifier("valid.id").isSuccess shouldBe true
+          testIdentifier("v.alid_id").isSuccess shouldBe true
+        }
+
+        it ("may contain digits from the second character") {
+          testIdentifier("valid1_d3nt1fier").isSuccess shouldBe true
+        }
+      }
+
+      describe("Identifier forbidden characters") {
+        it ("should not contain whitespace chars") {
+          testIdentifier("has spaces").isFailure shouldBe true
+          testIdentifier("has\nnewline").isFailure shouldBe true
+          testIdentifier("has\ttabulation").isFailure shouldBe true
+        }
+      }
+
     }
 
     describe("Optional whitespaces") {
