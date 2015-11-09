@@ -45,7 +45,7 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Newline = rule {
-    optional('\r') ~ '\n'
+    '\r'.? ~ '\n'
   }
 
   def Identifier = rule {
@@ -78,9 +78,7 @@ class BkvParser(val input: ParserInput) extends Parser with QuotedStringSupport 
   }
 
   def Nodes: Rule1[Seq[AstNode]] = rule {
-    OptWs ~
-      zeroOrMore(Node).separatedBy(Newline ~ OptWs) ~
-    OptWs
+    OptWs ~ zeroOrMore(Node).separatedBy(Newline ~ OptWs) ~ OptWs
   }
 
   def Root: Rule1[AstNode] = rule {
